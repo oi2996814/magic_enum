@@ -1,6 +1,6 @@
 // Licensed under the MIT License <http://opensource.org/licenses/MIT>.
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2019 - 2021 Daniil Goncharov <neargye@gmail.com>.
+// Copyright (c) 2019 - 2024 Daniil Goncharov <neargye@gmail.com>.
 //
 // Permission is hereby  granted, free of charge, to any  person obtaining a copy
 // of this software and associated  documentation files (the "Software"), to deal
@@ -22,7 +22,8 @@
 
 #include <iostream>
 
-#include <magic_enum.hpp>
+#include <magic_enum/magic_enum.hpp>
+#include <magic_enum/magic_enum_iostream.hpp>
 
 enum class Color : int { RED = -10, BLUE = 0, GREEN = 10 };
 
@@ -53,6 +54,12 @@ int main() {
     std::cout << "BLUE = " << to_integer(c2.value()) << std::endl; // BLUE = 0
   }
 
+  // Case insensitive enum_cast.
+  c2 = magic_enum::enum_cast<Color>("blue", magic_enum::case_insensitive);
+  if (c2.has_value()) {
+    std::cout << "BLUE = " << to_integer(c2.value()) << std::endl; // BLUE = 0
+  }
+
   // Integer value to enum value.
   auto c3 = magic_enum::enum_cast<Color>(10);
   if (c3.has_value()) {
@@ -63,7 +70,7 @@ int main() {
   auto c4_integer = magic_enum::enum_integer(Color::RED);
   std::cout << "RED = " << c4_integer << std::endl; // RED = -10
 
-  using namespace magic_enum::ostream_operators; // out-of-the-box ostream operator for all enums.
+  using magic_enum::iostream_operators::operator<<; // out-of-the-box ostream operator for all enums.
   // Ostream operator for enum.
   std::cout << "Color: " << c1 << " " << c2 << " " << c3 << std::endl; // Color: RED BLUE GREEN
 
@@ -80,7 +87,7 @@ int main() {
     std::cout << " " << c; // Ostream operator for enum.
   }
   std::cout << std::endl;
-  // Color sequence: RED BLUE GREEN
+  // Color values: RED BLUE GREEN
 
   enum class Flags { A = 1, B = 2, C = 4, D = 8 };
   using namespace magic_enum::bitwise_operators; // out-of-the-box bitwise operators for all enums.
